@@ -10,7 +10,7 @@ def get_bmi_category(bmi: float) -> str:
     if bmi < 30.0: return "Overweight"
     return "Obese"
 
-def filter_exercises(db: list, environments: List[str], injuries: List[str], goal: str) -> list:
+def filter_exercises(db: list, environments: List[str], injuries: List[str], goals: List[str]) -> list:
     result = []
     injury_set = set(i for i in injuries if i != "none")
     for ex in db:
@@ -18,8 +18,8 @@ def filter_exercises(db: list, environments: List[str], injuries: List[str], goa
             continue
         if injury_set & set(ex.get("avoid_injuries", [])):
             continue
-        goals = ex.get("goals", [])
-        if goal in goals:
+        ex_goals = ex.get("goals", [])
+        if any(g in ex_goals for g in goals):
             result.insert(0, ex)
         else:
             result.append(ex)

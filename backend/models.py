@@ -37,7 +37,7 @@ class UserProfile(BaseModel):
     fitness_level: FitnessLevel
     injuries:     List[InjuryArea] = []
     environment:  Union[List[Environment], Environment]
-    goal:         Goal
+    goal:         Union[List[Goal], Goal]
     days_per_week: int      = Field(..., ge=2, le=7)
     session_minutes: int    = Field(..., ge=20, le=120)
 

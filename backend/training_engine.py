@@ -33,10 +33,17 @@ class TrainingEngine:
             healthy_range="18.5 - 24.9"
         )
 
-        goal_ov  = self.GOAL_OVERRIDES[profile.goal]
-        rep_range    = goal_ov["rep_range"]
-        rest_secs    = goal_ov["rest"]
-        sets_per_ex  = max(2, min(5, 3 + goal_ov["sets_mod"]))
+        # Handle multiple goals — merge settings
+        goals = profile.goal if isinstance(profile.goal, list) else [profile.goal]
+        goal_label = " + ".join(g.replace("_", " ").title() for g in goals)
+
+        rep_ranges = [self.GOAL_OVERRIDES[g]["rep_range"] for g in goals]
+        rest_vals  = [self.GOAL_OVERRIDES[g]["rest"] for g in goals]
+        sets_mods  = [self.GOAL_OVERRIDES[g]["sets_mod"] for g in goals]
+
+        rep_range   = rep_ranges[0] if len(rep_ranges) == 1 else f"{rep_ranges[0]} / {rep_ranges[-1]}"
+        rest_secs   = round(sum(rest_vals) / len(rest_vals))
+        sets_per_ex = max(2, min(5, 3 + round(sum(sets_mods) / len(sets_mods))))
 
         age_factor = 0.85 if profile.age >= 50 else 1.0
         bmi_factor = 0.9 if bmi_val > 30 else 1.0
@@ -47,7 +54,7 @@ class TrainingEngine:
             EXERCISE_DB,
             environments=environments,
             injuries=profile.injuries,
-            goal=profile.goal
+            goals=goals
         )
 
         split = self._get_split(profile.days_per_week)
@@ -68,10 +75,10 @@ class TrainingEngine:
 
         return TrainingPlan(
             bmi=bmi_info,
-            goal=profile.goal,
+            goal=goal_label,
             weeks=weeks,
             weekly_split=split["name"],
-            tips=self._tips(profile)
+            tips=self._tips(profile, goals)
         )
 
     def _get_split(self, days: int) -> dict:
@@ -110,10 +117,8 @@ class TrainingEngine:
         for i, day_info in enumerate(split["days"]):
             muscles = day_info["muscles"]
             pool = [e for e in exercises if any(m in e.get("muscles",[]) for m in muscles)]
-            # Always show between 5 and 8 exercises per day
             min_ex = 5
             max_ex = max(min_ex, session_min // 10)
-            # If pool is smaller than min, reuse from full exercise list
             if len(pool) < min_ex:
                 extras = [e for e in exercises if e not in pool]
                 pool = pool + extras[:min_ex - len(pool)]
@@ -130,16 +135,18 @@ class TrainingEngine:
             ))
         return days
 
-    def _tips(self, p: UserProfile) -> List[str]:
+    def _tips(self, p: UserProfile, goals: List[str]) -> List[str]:
         tips = ["Always warm up for 5-10 minutes before each session.",
                 "Track your workouts in a journal or app to monitor progress.",
                 "Sleep 7-9 hours per night — it is when you actually grow stronger."]
         if p.fitness_level == "beginner":
             tips.append("Focus on form over weight. Watch tutorial videos for new exercises.")
-        if p.goal == "fat_loss":
+        if "fat_loss" in goals:
             tips.append("Combine training with a 300-500 kcal daily deficit for best fat loss results.")
-        if p.goal == "muscle_gain":
+        if "muscle_gain" in goals:
             tips.append("Eat 0.8-1g of protein per pound of bodyweight daily for muscle growth.")
+        if "strength" in goals:
+            tips.append("Progressive overload is key for strength — add small weight increments each week.")
         if p.age >= 50:
             tips.append("Include extra mobility work. Joint health is critical for long-term training.")
         return tips

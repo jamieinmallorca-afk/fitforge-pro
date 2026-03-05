@@ -12,7 +12,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
   const [form, setForm] = useState({
     age:20, weight_kg:70, height_cm:175,
     fitness_level:"beginner", injuries:["none"],
-    environment:["bodyweight"], goal:"fat_loss",
+    environment:["bodyweight"], goal:["fat_loss"],
     days_per_week:3, session_minutes:45
   });
 
@@ -67,11 +67,11 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         </div>
       </Card>
 
-      <Card title="Your Goal">
+      <Card title="Your Goals (multi-select)">
         <div className="grid grid-cols-2 gap-2">
           {GOALS.map(({v,l}) => (
-            <button key={v} onClick={() => setForm({...form,goal:v})}
-              className={`py-3 rounded-lg text-sm font-medium transition ${form.goal===v ? "bg-teal-600 text-white" : "bg-gray-100 dark:bg-gray-700 dark:text-gray-300"}`}>
+            <button key={v} onClick={() => toggleList("goal", v)}
+              className={`py-3 rounded-lg text-sm font-medium transition ${form.goal.includes(v) ? "bg-teal-600 text-white" : "bg-gray-100 dark:bg-gray-700 dark:text-gray-300"}`}>
               {l}
             </button>
           ))}
