@@ -1,6 +1,6 @@
-from models import UserProfile, TrainingPlan, WeekPlan, WorkoutDay, Exercise, BMIInfo
+from models import UserProfile, TrainingPlan, WeekPlan, WorkoutDay, Exercise, BMIInfo, CalorieInfo
 from exercise_database import EXERCISE_DB
-from utils import calculate_bmi, get_bmi_category, filter_exercises
+from utils import calculate_bmi, get_bmi_category, filter_exercises, calculate_calories
 from typing import List
 
 class TrainingEngine:
@@ -33,7 +33,6 @@ class TrainingEngine:
             healthy_range="18.5 - 24.9"
         )
 
-        # Handle multiple goals — merge settings
         goals = profile.goal if isinstance(profile.goal, list) else [profile.goal]
         goal_label = " + ".join(g.replace("_", " ").title() for g in goals)
 
@@ -49,6 +48,14 @@ class TrainingEngine:
         bmi_factor = 0.9 if bmi_val > 30 else 1.0
 
         environments = profile.environment if isinstance(profile.environment, list) else [profile.environment]
+
+        calories = calculate_calories(
+            weight_kg=profile.weight_kg,
+            height_cm=profile.height_cm,
+            age=profile.age,
+            goals=goals,
+            days_per_week=profile.days_per_week
+        )
 
         exercises = filter_exercises(
             EXERCISE_DB,
@@ -74,7 +81,9 @@ class TrainingEngine:
             ))
 
         return TrainingPlan(
+            user_name=profile.name or "Athlete",
             bmi=bmi_info,
+            calories=calories,
             goal=goal_label,
             weeks=weeks,
             weekly_split=split["name"],
@@ -92,8 +101,8 @@ class TrainingEngine:
                          {"focus":"Legs","muscles":["quads","hamstrings","glutes","calves"]}]},
             4: {"name": "Upper / Lower x2",
                 "days": [{"focus":"Upper A","muscles":["chest","back","shoulders"]},
-                         {"focus":"Lower A","muscles":["quads","hamstrings","glutes"]},
                          {"focus":"Upper B","muscles":["chest","back","arms"]},
+                         {"focus":"Lower A","muscles":["quads","hamstrings","glutes"]},
                          {"focus":"Lower B","muscles":["hamstrings","glutes","calves","core"]}]},
             5: {"name": "PPL + Full Body",
                 "days": [{"focus":"Push","muscles":["chest","shoulders","triceps"]},
@@ -123,9 +132,14 @@ class TrainingEngine:
                 extras = [e for e in exercises if e not in pool]
                 pool = pool + extras[:min_ex - len(pool)]
             pool = pool[:max_ex]
-            exs = [Exercise(name=e["name"], sets=sets,
-                            reps=reps, rest_seconds=rest,
-                            notes=e.get("notes","")) for e in pool]
+            exs = [Exercise(
+                name=e["name"],
+                sets=sets,
+                reps=reps,
+                rest_seconds=rest,
+                notes=e.get("notes",""),
+                video_url=e.get("video_url","")
+            ) for e in pool]
             days.append(WorkoutDay(
                 day_number   = i + 1,
                 day_name     = day_names[i],
@@ -146,7 +160,7 @@ class TrainingEngine:
         if "muscle_gain" in goals:
             tips.append("Eat 0.8-1g of protein per pound of bodyweight daily for muscle growth.")
         if "strength" in goals:
-            tips.append("Progressive overload is key for strength — add small weight increments each week.")
+            tips.append("Progressive overload is key — add small weight increments each week.")
         if p.age >= 50:
             tips.append("Include extra mobility work. Joint health is critical for long-term training.")
         return tips

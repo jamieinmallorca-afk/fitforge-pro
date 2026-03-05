@@ -10,7 +10,7 @@ const LEVELS = [{v:"beginner",l:"Beginner"},{v:"intermediate",l:"Intermediate"},
 
 export default function Home({ setLoading, setPlan, setError, loading, error }) {
   const [form, setForm] = useState({
-    age:25, weight_kg:75, height_cm:175,
+    name:"", age:25, weight_kg:75, height_cm:175,
     fitness_level:"beginner", injuries:["none"],
     environment:["bodyweight"], goal:["fat_loss"],
     days_per_week:3, session_minutes:45
@@ -46,6 +46,12 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         <h2 className="text-3xl font-black text-gray-900 dark:text-white">Build Your Plan</h2>
         <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">Fill in your details for a personalised 4-week programme</p>
       </div>
+
+      <Card title="👤 Your Name">
+        <input type="text" placeholder="Enter your name" value={form.name}
+          onChange={e => setForm({...form, name: e.target.value})}
+          className={inp} />
+      </Card>
 
       <Card title="📊 Basic Stats">
         <div className="grid grid-cols-3 gap-3">

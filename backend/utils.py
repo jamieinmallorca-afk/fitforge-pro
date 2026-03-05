@@ -1,4 +1,5 @@
 from typing import List
+from models import CalorieInfo
 
 def calculate_bmi(weight_kg: float, height_cm: float) -> float:
     height_m = height_cm / 100
@@ -9,6 +10,40 @@ def get_bmi_category(bmi: float) -> str:
     if bmi < 25.0: return "Normal weight"
     if bmi < 30.0: return "Overweight"
     return "Obese"
+
+def calculate_calories(weight_kg: float, height_cm: float, age: int,
+                       goals: List[str], days_per_week: int) -> CalorieInfo:
+    # Mifflin-St Jeor BMR (assuming male; close enough for both)
+    bmr = 10 * weight_kg + 6.25 * height_cm - 5 * age + 5
+
+    # Activity multiplier based on training days
+    if days_per_week <= 2:   activity = 1.375
+    elif days_per_week <= 4: activity = 1.55
+    elif days_per_week <= 5: activity = 1.725
+    else:                    activity = 1.9
+
+    tdee = round(bmr * activity)
+
+    # Calorie target based on goal
+    if "fat_loss" in goals:
+        target = round(tdee - 400)
+    elif "muscle_gain" in goals:
+        target = round(tdee + 300)
+    else:
+        target = tdee
+
+    # Macro split
+    protein_g = round(weight_kg * 2.0)
+    fat_g     = round(target * 0.25 / 9)
+    carbs_g   = round((target - protein_g * 4 - fat_g * 9) / 4)
+
+    return CalorieInfo(
+        tdee=tdee,
+        target=target,
+        protein_g=protein_g,
+        carbs_g=max(0, carbs_g),
+        fat_g=fat_g
+    )
 
 def filter_exercises(db: list, environments: List[str], injuries: List[str], goals: List[str]) -> list:
     result = []

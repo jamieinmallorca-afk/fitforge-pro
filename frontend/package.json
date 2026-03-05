@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "fitforge-pro",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -26,5 +26,6 @@
     "postcss": "^8.5.8",
     "tailwindcss": "^3.4.19",
     "vite": "^7.3.1"
-  }
+  },
+  "description": "AI-powered personalised training plans"
 }

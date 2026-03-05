@@ -31,6 +31,7 @@ class InjuryArea(str, Enum):
     elbow         = "elbow"
 
 class UserProfile(BaseModel):
+    name:         Optional[str] = "Athlete"
     age:          int       = Field(..., ge=16, le=80)
     weight_kg:    float     = Field(..., ge=30, le=300)
     height_cm:    float     = Field(..., ge=100, le=250)
@@ -47,6 +48,7 @@ class Exercise(BaseModel):
     reps:         str
     rest_seconds: int
     notes:        Optional[str] = None
+    video_url:    Optional[str] = None
 
 class WorkoutDay(BaseModel):
     day_number:   int
@@ -66,9 +68,17 @@ class BMIInfo(BaseModel):
     category: str
     healthy_range: str
 
+class CalorieInfo(BaseModel):
+    tdee:         int
+    target:       int
+    protein_g:    int
+    carbs_g:      int
+    fat_g:        int
+
 class TrainingPlan(BaseModel):
     user_name:    str = "Athlete"
     bmi:          BMIInfo
+    calories:     CalorieInfo
     goal:         str
     weeks:        List[WeekPlan]
     weekly_split: str
