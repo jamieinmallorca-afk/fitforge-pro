@@ -5,12 +5,6 @@ from typing import List
 
 class TrainingEngine:
 
-    VOLUME = {
-        "beginner":     {"sets_per_muscle": 9,  "rep_range": "12-15", "rest": 90},
-        "intermediate": {"sets_per_muscle": 15, "rep_range": "8-12",  "rest": 75},
-        "advanced":     {"sets_per_muscle": 20, "rep_range": "5-8",   "rest": 60},
-    }
-
     GOAL_OVERRIDES = {
         "fat_loss":    {"rep_range": "12-20", "rest": 45,  "sets_mod": -1},
         "muscle_gain": {"rep_range": "8-12",  "rest": 75,  "sets_mod": 0},
@@ -45,7 +39,7 @@ class TrainingEngine:
         sets_per_ex = max(2, min(5, 3 + round(sum(sets_mods) / len(sets_mods))))
 
         age_factor = 0.85 if profile.age >= 50 else 1.0
-        bmi_factor = 0.9 if bmi_val > 30 else 1.0
+        bmi_factor = 0.9  if bmi_val > 30 else 1.0
 
         environments = profile.environment if isinstance(profile.environment, list) else [profile.environment]
 
@@ -53,6 +47,7 @@ class TrainingEngine:
             weight_kg=profile.weight_kg,
             height_cm=profile.height_cm,
             age=profile.age,
+            gender=profile.gender,
             goals=goals,
             days_per_week=profile.days_per_week
         )
@@ -61,7 +56,8 @@ class TrainingEngine:
             EXERCISE_DB,
             environments=environments,
             injuries=profile.injuries,
-            goals=goals
+            goals=goals,
+            gender=profile.gender
         )
 
         split = self._get_split(profile.days_per_week)
@@ -133,26 +129,23 @@ class TrainingEngine:
                 pool = pool + extras[:min_ex - len(pool)]
             pool = pool[:max_ex]
             exs = [Exercise(
-                name=e["name"],
-                sets=sets,
-                reps=reps,
-                rest_seconds=rest,
-                notes=e.get("notes",""),
+                name=e["name"], sets=sets, reps=reps,
+                rest_seconds=rest, notes=e.get("notes",""),
                 video_url=e.get("video_url","")
             ) for e in pool]
             days.append(WorkoutDay(
-                day_number   = i + 1,
-                day_name     = day_names[i],
-                focus        = day_info["focus"],
-                exercises    = exs,
-                total_volume = sets * len(exs)
+                day_number=i+1, day_name=day_names[i],
+                focus=day_info["focus"], exercises=exs,
+                total_volume=sets*len(exs)
             ))
         return days
 
     def _tips(self, p: UserProfile, goals: List[str]) -> List[str]:
         tips = ["Always warm up for 5-10 minutes before each session.",
-                "Track your workouts in a journal or app to monitor progress.",
-                "Sleep 7-9 hours per night — it is when you actually grow stronger."]
+                "Track your workouts to monitor progress over time.",
+                "Sleep 7-9 hours per night — recovery is when you get stronger."]
+        if p.gender == "female":
+            tips.append("Strength training will not make you bulky — it builds a lean, strong physique and boosts metabolism.")
         if p.fitness_level == "beginner":
             tips.append("Focus on form over weight. Watch tutorial videos for new exercises.")
         if "fat_loss" in goals:

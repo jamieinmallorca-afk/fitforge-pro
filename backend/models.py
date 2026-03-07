@@ -7,6 +7,10 @@ class FitnessLevel(str, Enum):
     intermediate = "intermediate"
     advanced     = "advanced"
 
+class Gender(str, Enum):
+    male   = "male"
+    female = "female"
+
 class Environment(str, Enum):
     home_gym    = "home_gym"
     pro_gym     = "pro_gym"
@@ -29,18 +33,20 @@ class InjuryArea(str, Enum):
     neck          = "neck"
     hip           = "hip"
     elbow         = "elbow"
+    abdominal     = "abdominal"
 
 class UserProfile(BaseModel):
-    name:         Optional[str] = "Athlete"
-    age:          int       = Field(..., ge=16, le=80)
-    weight_kg:    float     = Field(..., ge=30, le=300)
-    height_cm:    float     = Field(..., ge=100, le=250)
+    name:          Optional[str] = "Athlete"
+    gender:        Gender
+    age:           int       = Field(..., ge=16, le=80)
+    weight_kg:     float     = Field(..., ge=30, le=300)
+    height_cm:     float     = Field(..., ge=100, le=250)
     fitness_level: FitnessLevel
-    injuries:     List[InjuryArea] = []
-    environment:  Union[List[Environment], Environment]
-    goal:         Union[List[Goal], Goal]
-    days_per_week: int      = Field(..., ge=2, le=7)
-    session_minutes: int    = Field(..., ge=20, le=120)
+    injuries:      List[InjuryArea] = []
+    environment:   Union[List[Environment], Environment]
+    goal:          Union[List[Goal], Goal]
+    days_per_week: int       = Field(..., ge=2, le=7)
+    session_minutes: int     = Field(..., ge=20, le=120)
 
 class Exercise(BaseModel):
     name:         str

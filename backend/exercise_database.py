@@ -245,43 +245,43 @@ EXERCISE_DB = [
 
   {"name":"Bicycle Crunch","muscles":["core"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["neck","lower_back"],"goals":["fat_loss","endurance"],
+   "avoid_injuries":["neck","lower_back","abdominal"],"goals":["fat_loss","endurance"],
    "video_url":"https://www.youtube.com/watch?v=9FGilxCbdz8"},
 
   {"name":"Hanging Knee Raise","muscles":["core"],
    "environments":["pro_gym","outdoor"],
-   "avoid_injuries":["shoulder","wrist","elbow"],"goals":["muscle_gain","fat_loss"],
+   "avoid_injuries":["shoulder","wrist","elbow","abdominal"],"goals":["muscle_gain","fat_loss"],
    "video_url":"https://www.youtube.com/watch?v=Pr1ieGZ5atk"},
 
   {"name":"Ab Wheel Rollout","muscles":["core"],
    "environments":["pro_gym","home_gym"],
-   "avoid_injuries":["lower_back","wrist","shoulder"],"goals":["strength","muscle_gain"],
+   "avoid_injuries":["lower_back","wrist","shoulder","abdominal"],"goals":["strength","muscle_gain"],
    "video_url":"https://www.youtube.com/watch?v=IGKjMNsIECg"},
 
   {"name":"Mountain Climber","muscles":["core","cardio"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["wrist","shoulder"],"goals":["fat_loss","endurance"],
+   "avoid_injuries":["wrist","shoulder","abdominal"],"goals":["fat_loss","endurance"],
    "video_url":"https://www.youtube.com/watch?v=nmwgirgXLYM"},
 
   {"name":"Russian Twist","muscles":["core"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["lower_back"],"goals":["fat_loss","endurance"],
+   "avoid_injuries":["lower_back","abdominal"],"goals":["fat_loss","endurance"],
    "video_url":"https://www.youtube.com/watch?v=wkD8rjkodUI"},
 
   {"name":"Leg Raise","muscles":["core"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["lower_back","hip"],"goals":["fat_loss","muscle_gain"],
+   "avoid_injuries":["lower_back","hip","abdominal"],"goals":["fat_loss","muscle_gain"],
    "video_url":"https://www.youtube.com/watch?v=JB2oyawG9KI"},
 
   {"name":"V-Up","muscles":["core"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["lower_back","hip"],"goals":["fat_loss","endurance"],
+   "avoid_injuries":["lower_back","hip","abdominal"],"goals":["fat_loss","endurance"],
    "video_url":"https://www.youtube.com/watch?v=7UVgs18Y1P4"},
 
   # ── CARDIO / CONDITIONING ──────────────────────────────────────────────
   {"name":"Burpees","muscles":["cardio","core","chest"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
-   "avoid_injuries":["knee","wrist","shoulder"],"goals":["fat_loss","endurance"],
+   "avoid_injuries":["knee","wrist","shoulder","abdominal"],"goals":["fat_loss","endurance"],
    "video_url":"https://www.youtube.com/watch?v=dZgVxmf6jkA"},
 
   {"name":"Box Jump","muscles":["cardio","quads","glutes"],

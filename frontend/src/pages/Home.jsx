@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { generatePlan } from "../api";
 
-const INJURIES = ["none","lower_back","knee","shoulder","wrist","ankle","neck","hip","elbow"];
+const INJURIES = ["none","lower_back","knee","shoulder","wrist","ankle","neck","hip","elbow","abdominal"];
 const ENVS = [{v:"home_gym",l:"🏠 Home Gym"},{v:"pro_gym",l:"🏋️ Pro Gym"},
               {v:"outdoor",l:"🌳 Outdoor"},{v:"bodyweight",l:"💪 Bodyweight"}];
 const GOALS = [{v:"fat_loss",l:"🔥 Fat Loss"},{v:"muscle_gain",l:"💪 Muscle Gain"},
@@ -10,7 +10,7 @@ const LEVELS = [{v:"beginner",l:"Beginner"},{v:"intermediate",l:"Intermediate"},
 
 export default function Home({ setLoading, setPlan, setError, loading, error }) {
   const [form, setForm] = useState({
-    name:"", age:25, weight_kg:75, height_cm:175,
+    name:"", gender:"male", age:25, weight_kg:75, height_cm:175,
     fitness_level:"beginner", injuries:["none"],
     environment:["bodyweight"], goal:["fat_loss"],
     days_per_week:3, session_minutes:45
@@ -53,6 +53,17 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
           className={inp} />
       </Card>
 
+      <Card title="⚧ Gender">
+        <div className="grid grid-cols-2 gap-3">
+          {[{v:"male",l:"♂ Male"},{v:"female",l:"♀ Female"}].map(({v,l}) => (
+            <button key={v} onClick={() => setForm({...form, gender: v})}
+              className={`py-4 rounded-xl text-base font-bold transition-all ${form.gender===v ? (v==="male" ? "bg-blue-600 text-white shadow-md scale-105" : "bg-pink-500 text-white shadow-md scale-105") : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
+              {l}
+            </button>
+          ))}
+        </div>
+      </Card>
+
       <Card title="📊 Basic Stats">
         <div className="grid grid-cols-3 gap-3">
           {[["Age","age",16,80,"yrs"],["Weight","weight_kg",30,300,"kg"],["Height","height_cm",100,250,"cm"]].map(([lbl,key,min,max,unit]) => (
@@ -73,7 +84,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         <div className="flex gap-2">
           {LEVELS.map(({v,l}) => (
             <button key={v} onClick={() => setForm({...form,fitness_level:v})}
-              className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${form.fitness_level===v ? "bg-blue-600 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200"}`}>
+              className={`flex-1 py-3 rounded-xl text-sm font-semibold transition-all ${form.fitness_level===v ? "bg-blue-600 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
               {l}
             </button>
           ))}
@@ -84,7 +95,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         <div className="grid grid-cols-2 gap-2">
           {GOALS.map(({v,l}) => (
             <button key={v} onClick={() => toggleList("goal", v)}
-              className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${form.goal.includes(v) ? "bg-teal-500 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200"}`}>
+              className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${form.goal.includes(v) ? "bg-teal-500 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
               {l}
             </button>
           ))}
@@ -95,7 +106,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         <div className="grid grid-cols-2 gap-2">
           {ENVS.map(({v,l}) => (
             <button key={v} onClick={() => toggleList("environment", v)}
-              className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${form.environment.includes(v) ? "bg-orange-500 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200"}`}>
+              className={`py-3 px-2 rounded-xl text-sm font-semibold transition-all ${form.environment.includes(v) ? "bg-orange-500 text-white shadow-md scale-105" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
               {l}
             </button>
           ))}
@@ -106,7 +117,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
         <div className="flex flex-wrap gap-2">
           {INJURIES.map(inj => (
             <button key={inj} onClick={() => toggleList("injuries", inj)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${form.injuries.includes(inj) ? "bg-red-500 text-white shadow-sm" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200"}`}>
+              className={`px-3 py-1.5 rounded-full text-xs font-semibold capitalize transition-all ${form.injuries.includes(inj) ? "bg-red-500 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300"}`}>
               {inj.replace("_"," ")}
             </button>
           ))}
@@ -149,7 +160,7 @@ export default function Home({ setLoading, setPlan, setError, loading, error }) 
       )}
 
       <button onClick={submit} disabled={loading}
-        className="w-full py-4 bg-gradient-to-r from-blue-700 to-teal-600 text-white font-black rounded-2xl text-lg shadow-xl active:scale-95 transition-all disabled:opacity-60 disabled:cursor-not-allowed">
+        className="w-full py-4 bg-gradient-to-r from-blue-700 to-teal-600 text-white font-black rounded-2xl text-lg shadow-xl active:scale-95 transition-all disabled:opacity-60">
         {loading ? "⏳ Generating your plan..." : "Generate My Training Plan →"}
       </button>
 
