@@ -37,12 +37,12 @@ EXERCISE_DB = [
   {"name":"Close-Grip Push-Up","muscles":["chest","triceps"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
    "avoid_injuries":["wrist","elbow"],"goals":["muscle_gain","endurance"],
-   "video_url":"https://www.youtube.com/watch?v=b7pOWdM6_9s"},
+   "video_url":"https://youtu.be/2cdIRe5tcqI"},
 
   {"name":"Incline Push-Up","muscles":["chest","triceps"],
    "environments":["pro_gym","home_gym","outdoor","bodyweight"],
    "avoid_injuries":["wrist"],"goals":["fat_loss","endurance","muscle_gain"],
-   "video_url":"https://www.youtube.com/watch?v=cfns5HQnXFE"},
+   "video_url":"https://youtu.be/Me9bHFAxnCs"},
 
   # ── BACK ───────────────────────────────────────────────────────────────
   {"name":"Barbell Deadlift","muscles":["back","glutes","hamstrings"],
